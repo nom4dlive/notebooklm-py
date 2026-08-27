@@ -3,9 +3,9 @@
   <img src="https://raw.githubusercontent.com/teng-lin/notebooklm-py/main/notebooklm-py.png" alt="notebooklm-py logo" width="128">
 </p>
 
-**A Comprehensive Google Gemini Notebook Skill & Unofficial Python API.** Full programmatic access to NotebookLM's features—including capabilities the web UI doesn't expose—via Python, CLI, and AI agents like Claude Code, Codex, and OpenClaw.
+**Uma Habilidade Completa do Google Gemini Notebook e API Python Não Oficial.** Acesso programático total aos recursos do NotebookLM — incluindo capacidades que a interface web não expõe — via Python, CLI e agentes de IA como Claude Code, Codex e OpenClaw.
 
-> **Note (July 2026):** Google rebranded **NotebookLM** to **[Gemini Notebook](https://blog.google/innovation-and-ai/products/gemini-notebook/notebooklm-gemini-notebook/)**. It remains the same standalone product (now also reachable inside the Gemini app), existing links redirect automatically, and this library drives the same underlying service and works unchanged. The package keeps the `notebooklm-py` name.
+> **Nota (Julho 2026):** O Google renomeou **NotebookLM** para **[Gemini Notebook](https://blog.google/innovation-and-ai/products/gemini-notebook/notebooklm-gemini-notebook/)**. Continua sendo o mesmo produto independente (agora também acessível dentro do app Gemini), links existentes redirecionam automaticamente, e esta biblioteca continua funcionando com o mesmo serviço subjacente. O pacote mantém o nome `notebooklm-py`.
 
 [![PyPI version](https://img.shields.io/pypi/v/notebooklm-py.svg)](https://pypi.org/project/notebooklm-py/)
 [![Python Version](https://img.shields.io/badge/python-3.10%20%7C%203.11%20%7C%203.12%20%7C%203.13%20%7C%203.14-blue)](https://pypi.org/project/notebooklm-py/)
@@ -15,61 +15,61 @@
   <a href="https://trendshift.io/repositories/19116" target="_blank"><img src="https://trendshift.io/api/badge/repositories/19116" alt="teng-lin%2Fnotebooklm-py | Trendshift" style="width: 250px; height: 55px;" width="250" height="55"/></a>
 </p>
 
-**Source & Development**: <https://github.com/teng-lin/notebooklm-py>
+**Código & Desenvolvimento**: <https://github.com/teng-lin/notebooklm-py>
 
-> **⚠️ Unofficial Library - Use at Your Own Risk**
+> **⚠️ Biblioteca Não Oficial - Use por Sua Conta e Risco**
 >
-> This library uses **undocumented Google APIs** that can change without notice.
+> Esta biblioteca usa **APIs não documentadas do Google** que podem mudar sem aviso prévio.
 >
-> - **Not affiliated with Google** - This is a community project
-> - **APIs may break** - Google can change internal endpoints anytime
-> - **Rate limits apply** - Heavy usage may be throttled
+> - **Não afiliada ao Google** - Este é um projeto da comunidade
+> - **APIs podem quebrar** - O Google pode alterar endpoints internos a qualquer momento
+> - **Limites de taxa se aplicam** - Uso intensivo pode ser limitado
 >
-> Best for prototypes, research, and personal projects. See [Troubleshooting](docs/troubleshooting.md) for debugging tips.
+> Ideal para protótipos, pesquisa e projetos pessoais. Veja [Solução de Problemas](docs/troubleshooting.md) para dicas de depuração.
 
-## What You Can Build
+## O Que Você Pode Construir
 
-🤖 **AI Agent Tools** - Integrate NotebookLM into Claude Code, Codex, and other LLM agents. Ships with a root [NotebookLM skill](SKILL.md) for GitHub and `npx skills add` discovery, local `notebooklm skill install` support for Claude Code and `.agents` skill directories, and repo-level Codex guidance in [`AGENTS.md`](AGENTS.md).
+🤖 **Ferramentas para Agentes de IA** - Integre o NotebookLM no Claude Code, Codex e outros agentes LLM. Inclui uma [habilidade NotebookLM](SKILL.md) raiz para descoberta via GitHub e `npx skills add`, suporte local a `notebooklm skill install` para Claude Code e diretórios de habilidade `.agents`, e orientações específicas para Codex em [`AGENTS.md`](AGENTS.md).
 
-📚 **Research Automation** - Bulk-import sources (URLs, PDFs, YouTube, Google Drive), run web/Drive research queries with auto-import, and extract insights programmatically. Build repeatable research pipelines.
+📚 **Automação de Pesquisa** - Importe fontes em massa (URLs, PDFs, YouTube, Google Drive), execute consultas de pesquisa web/Drive com importação automática e extraia insights programaticamente. Construa pipelines de pesquisa repetíveis.
 
-🎙️ **Content Generation** - Generate Audio Overviews (podcasts), videos, slide decks, quizzes, flashcards, infographics, data tables, mind maps, and study guides. Full control over formats, styles, and output.
+🎙️ **Geração de Conteúdo** - Gere Audio Overviews (podcasts), vídeos, apresentações de slides, quizzes, flashcards, infográficos, tabelas de dados, mapas mentais e guias de estudo. Controle total sobre formatos, estilos e saída.
 
-📥 **Downloads & Export** - Download all generated artifacts locally (MP3, MP4, PDF, PNG, CSV, JSON, Markdown). Export to Google Docs/Sheets. **Features the web UI doesn't offer**: batch downloads, quiz/flashcard export in multiple formats, mind map JSON extraction.
+📥 **Downloads & Exportação** - Baixe todos os artefatos gerados localmente (MP3, MP4, PDF, PNG, CSV, JSON, Markdown). Exporte para Google Docs/Sheets. **Recursos que a interface web não oferece**: downloads em lote, exportação de quiz/flashcard em múltiplos formatos, extração de mapa mental como JSON.
 
-## Use Cases & Recipes
+## Casos de Uso e Receitas
 
-NotebookLM is a **grounded** engine: Gemini does the heavy reading and answers from *your* sources with citations. The winning pattern is to let it do the expensive analysis while your agent (Claude Code, Codex, …) orchestrates and handles the final mile — using NotebookLM as a **zero-token synthesis + memory layer an agent drives in a loop**, and pulling structured artifacts **out** in bulk and in richer, scriptable formats. Recipes people build on top of this library, grouped by what they use NotebookLM *as*:
+NotebookLM é um mecanismo **fundamentado**: o Gemini faz a leitura pesada e responde a partir das *suas* fontes com citações. O padrão vencedor é deixá-lo fazer a análise cara enquanto seu agente (Claude Code, Codex, …) orquestra e cuida da última milha — usando o NotebookLM como uma **camada de síntese de token zero + memória que um agente dirige em um loop**, e extraindo artefatos estruturados **para fora** em massa e em formatos mais ricos e scriptáveis. Receitas que as pessoas constroem em cima desta biblioteca, agrupadas pelo que usam o NotebookLM *como*:
 
-**Spend fewer tokens** — let NotebookLM do the expensive thinking:
+**Gaste menos tokens** — deixe o NotebookLM fazer o pensamento caro:
 
-- **🪙 Zero-token research offload** — Throw 30 documents into a notebook, let Gemini do the heavy analysis, and have your agent spend tokens only on the final polish. The agent just orchestrates (`create` → `source add` → `ask`); the reasoning happens server-side. *In the wild: [a four-workflow guide to stop Claude Code burning tokens on NotebookLM](https://x.com/hooeem/status/2042293751805329445).*
-- **🧠 Knowledge distillation → a permanent skill** — Run [Deep Research](docs/cli-reference.md#source-add-research) (`source add-research "your topic" --mode deep`) or load a doc corpus, let NotebookLM's Gemini condense it, and bake the result into a `SKILL.md` your agent loads at startup — **build once, reuse with zero runtime tokens or network calls**, git-versioned and immune to UI drift. A packaged domain expert without hand-curating sources. (Dumping raw docs into a skill flattens the hierarchy; NotebookLM condensing first is what makes it work.)
-- **✅ Self-validating skills** — Have NotebookLM generate the *eval set* — a quiz straight from your sources — to grade an agent skill against ground truth instead of test questions you'd bias yourself. Build the skill, run it against the NotebookLM-authored evals, iterate to a pass. *In the wild: [a skill that scored 4/10 on the first pass and 10/10 after one iteration, graded by a NotebookLM-generated quiz](https://x.com/nurijanian/status/2037136490157986277).*
+- **🪙 Descarga de pesquisa com token zero** — Jogue 30 documentos em um notebook, deixe o Gemini fazer a análise pesada, e faça seu agente gastar tokens apenas no polimento final. O agente apenas orquestra (`create` → `source add` → `ask`); o raciocínio acontece no lado do servidor. *Na natureza: [um guia de quatro fluxos para impedir que o Claude Code queime tokens no NotebookLM](https://x.com/hooeem/status/2042293751805329445).*
+- **🧠 Destilação de conhecimento → uma habilidade permanente** — Execute [Pesquisa Profunda](docs/cli-reference.md#source-add-research) (`source add-research "seu tópico" --mode deep`) ou carregue um corpus de documentos, deixe o Gemini do NotebookLM condensar, e incorpore o resultado em um `SKILL.md` que seu agente carrega na inicialização — **construa uma vez, reutilize com zero tokens de runtime ou chamadas de rede**, versionado no git e imune à deriva da UI. Um especialista de domínio empacotado sem curadoria manual de fontes. (Despejar docs brutos em uma habilidade achata a hierarquia; o NotebookLM condensando primeiro é o que funciona.)
+- **✅ Habilidades auto-validadas** — Faça o NotebookLM gerar o *conjunto de avaliação* — um quiz direto das suas fontes — para avaliar uma habilidade de agente contra a verdade fundamental em vez de perguntas de teste que você viesaria. Construa a habilidade, execute contra as avaliações escritas pelo NotebookLM, itere até passar. *Na natureza: [uma habilidade que marcou 4/10 na primeira passada e 10/10 após uma iteração, avaliada por um quiz gerado pelo NotebookLM](https://x.com/nurijanian/status/2037136490157986277).*
 
-**Give your agent memory** — persistent, grounded recall:
+**Dê memória ao seu agente** — recall persistente e fundamentado:
 
-- **💾 Persistent cross-session memory** — Keep a "Master Brain" notebook; a wrap-up step appends each session's decisions and fixes as notes (`note create` / `ask --save-as-note`), and a line in your `CLAUDE.md` queries it (`ask`) at the start of the next session. Storage and recall live on Google's infrastructure.
-- **🧩 Grounded memory for coding agents** — Expose a notebook of your internal docs/RFCs/architecture over the [MCP server](docs/mcp-guide.md) (or plain `ask`) so an agent answers from *your* code with citations rather than plausible-sounding guesses — a zero-infra alternative to standing up your own vector DB and embedding pipeline. *In the wild: [turning a notebook into the source-grounded "project brain" a coding agent consults before it writes code](https://medium.com/@pradeep00271/every-software-project-needs-a-project-brain-5cbc33917160).*
-- **🪞 Query your own notes / journal** — Load years of daily notes, meeting logs, or a journal and `ask` for **cited** answers *across your own history* — surfacing long-term patterns a keyword search can't (e.g. a weekly summary synthesized from 282 daily notes, every claim linked back to the entry it came from). *In the wild: [chatting with a year of daily notes as a cited knowledge base](https://artemxtech.substack.com/p/notebooklm-has-a-knowledge-graph).*
+- **💾 Memória persistente entre sessões** — Mantenha um notebook "Cérebro Mestre"; um passo de fechamento anexa as decisões e correções de cada sessão como notas (`note create` / `ask --save-as-note`), e uma linha no seu `CLAUDE.md` consulta isso (`ask`) no início da próxima sessão. Armazenamento e recall vivem na infraestrutura do Google.
+- **🧩 Memória fundamentada para agentes de codificação** — Exponha um notebook dos seus docs/RFCs/arquitetura internos via [servidor MCP](docs/mcp-guide.md) (ou `ask` simples) para que um agente responda a partir do *seu* código com citações em vez de palpites plausíveis — uma alternativa de infraestrutura zero para montar seu próprio banco de dados vetorial e pipeline de embeddings. *Na natureza: [transformando um notebook no "cérebro do projeto" fundamentado em fontes que um agente de codificação consulta antes de escrever código](https://medium.com/@pradeep00271/every-software-project-needs-a-project-brain-5cbc33917160).*
+- **🪞 Consulte suas próprias notas / diário** — Carregue anos de notas diárias, registros de reuniões ou um diário e `ask` por respostas **citadas** *através da sua própria história* — surfaced padrões de longo prazo que uma busca por palavras-chave não consegue (ex.: um resumo semanal sintetizado a partir de 282 notas diárias, cada afirmação vinculada à entrada de onde veio). *Na natureza: [conversando com um ano de notas diárias como base de conhecimento citada](https://artemxtech.substack.com/p/notebooklm-has-a-knowledge-graph).*
 
-**Turn your sources into answers & artifacts** — cited responses, generated media, and exports:
+**Transforme suas fontes em respostas e artefatos** — respostas citadas, mídia gerada e exportações:
 
-- **📞 Grounded knowledge base / troubleshooting oracle (RAG)** — Load product docs, FAQs, RFCs, and past tickets, then `ask --json` for **source-grounded, cited** answers for support, on-call, or internal Q&A. Or have an agent point it at an entire fast-moving tool's docs — more than the agent can hold in context — as a **troubleshooting oracle** it queries the moment it hits an error. *In the wild: [OpenClaw drove the library to scrape all 524 pages of `docs.openclaw.ai`, dedupe the duplicate translations, and audit it down to 269 clean sources (missing/extra/duplicate = 0)](https://x.com/onenewbite/status/2024819940327379286).*
-- **🔁 Multi-format content repurposing** — One source set, every format: `generate audio` (podcast), `generate video`, `generate slide-deck`, plus a `generate report` blog draft, `generate quiz`, and `generate flashcards` — fan a single notebook out across channels.
-- **📤 Bulk, scriptable exports** — Pull mind maps as JSON, flashcards/quizzes as JSON/Markdown/HTML, data tables as CSV, and reports as Markdown — **in bulk, to local files, straight into Anki, your mind-mapping tool, or a repo** (`download <type>` / `download <type> --all`). The programmatic "get data *out*" half of the library, not just "put sources in."
-- **🕸️ Obsidian / knowledge-graph sync** — Run the CLI from your vault root so downloaded artifacts (reports, mind-map JSON, transcripts) land as files in your knowledge graph; community skills built on this library even resolve NotebookLM's citation markers into Obsidian `[[wikilinks]]`. Pair with a podcast overview for an audio digest of your notes. *In the wild: ["Claude Code + NotebookLM + Obsidian = GOD MODE"](https://www.youtube.com/watch?v=kU3qYQ7ACMA).*
+- **📞 Base de conhecimento fundamentada / oráculo de solução de problemas (RAG)** — Carregue docs de produto, FAQs, RFCs e tickets passados, depois `ask --json` por respostas **fundamentadas nas fontes e citadas** para suporte, plantão ou Q&A interno. Ou faça um agente apontar para os docs de uma ferramenta em movimento rápido — mais do que o agente pode manter em contexto — como um **oráculo de solução de problemas** que consulta no momento em que encontra um erro. *Na natureza: [OpenClaw dirigiu a biblioteca para raspar todas as 524 páginas de `docs.openclaw.ai`, deduplicar traduções duplicadas e auditar para 269 fontes limpas (faltando/extra/duplicado = 0)](https://x.com/onenewbite/status/2024819940327379286).*
+- **🔁 Reproposição de conteúdo multi-formato** — Um conjunto de fontes, todos os formatos: `generate audio` (podcast), `generate video`, `generate slide-deck`, mais um rascunho de blog `generate report`, `generate quiz` e `generate flashcards` — expanda um único notebook através de canais.
+- **📤 Exportações em massa e scriptáveis** — Extraia mapas mentais como JSON, flashcards/quizzes como JSON/Markdown/HTML, tabelas de dados como CSV e relatórios como Markdown — **em massa, para arquivos locais, direto para Anki, sua ferramenta de mapeamento mental ou um repositório** (`download <tipo>` / `download <tipo> --all`). A metade programática de "obter dados *para fora*" da biblioteca, não apenas "colocar fontes para dentro".
+- **🕸️ Sincronização com Obsidian / grafo de conhecimento** — Execute a CLI a partir da raiz do seu vault para que artefatos baixados (relatórios, JSON de mapa mental, transcrições) caiam como arquivos no seu grafo de conhecimento; habilidades da comunidade construídas nesta biblioteca até resolvem marcadores de citação do NotebookLM em `[[wikilinks]]` do Obsidian. Combine com uma visão geral de podcast para um digesto de áudio das suas notas. *Na natureza: ["Claude Code + NotebookLM + Obsidian = MODO DEUS"](https://www.youtube.com/watch?v=kU3qYQ7ACMA).*
 
-**Run it unattended, at scale, or on the go** — scheduled, headless, and remote:
+**Execute sem supervisão, em escala ou em movimento** — agendado, headless e remoto:
 
-- **🚨 Incident runbook generator** — On an alert, spin up a notebook of the relevant docs, ask targeted diagnostic questions, and generate a briefing-doc report (`generate report --format briefing-doc --wait`, then `download report`) as an automated runbook.
-- **📚 Curriculum / study-set builder** — Scrape a syllabus or developer roadmap, create one notebook per topic (with deliberate pacing to dodge rate limits), and bulk-generate podcasts, quizzes, and flashcards for each.
-- **📰 Scheduled audio briefings** — Pair `auth refresh --quiet` (cron/launchd/systemd) with `generate audio` to publish a fresh personalized briefing to a podcast feed on a schedule.
-- **📱 NotebookLM from your phone, agent-driven** — Self-host the [remote MCP connector](docs/mcp-guide.md#remote-deployment-docker--a-tunnel) behind a Cloudflare/Tailscale tunnel and add it as a custom connector **on the web** (claude.ai Connectors, or ChatGPT with Developer Mode). Then drive the full toolset — deep research, source ingestion, studio generation, cited Q&A — from the **claude.ai mobile app** on the go (ChatGPT's MCP connectors are web-only), chained with your other MCP tools, instead of app-hopping.
+- **🚨 Gerador de runbook de incidente** — Em um alerta, crie um notebook com os docs relevantes, faça perguntas diagnósticas direcionadas e gere um relatório de briefing-doc (`generate report --format briefing-doc --wait`, depois `download report`) como um runbook automatizado.
+- **📚 Construtor de currículo / conjunto de estudos** — Raspe uma ementa ou roadmap de desenvolvedor, crie um notebook por tópico (com ritmo deliberado para evitar limites de taxa) e gere em massa podcasts, quizzes e flashcards para cada.
+- **📰 Briefings de áudio agendados** — Combine `auth refresh --quiet` (cron/launchd/systemd) com `generate audio` para publicar um briefing personalizado fresco em um feed de podcast em uma agenda.
+- **📱 NotebookLM do seu celular, dirigido por agente** — Auto-hospede o [conector MCP remoto](docs/mcp-guide.md#remote-deployment-docker--a-tunnel) atrás de um túnel Cloudflare/Tailscale e adicione-o como um conector personalizado **na web** (Conectores claude.ai, ou ChatGPT com Modo Desenvolvedor). Depois dirija o conjunto completo de ferramentas — pesquisa profunda, ingestão de fontes, geração de estúdio, Q&A citado — a partir do **app móvel claude.ai** em movimento (conectores MCP do ChatGPT são apenas web), encadeado com suas outras ferramentas MCP, em vez de pular entre apps.
 
-These combine ordinary library primitives — see the [CLI Reference](docs/cli-reference.md) and [Python API](docs/python-api.md). The agent-side glue (skills, scheduling, vault layout) lives in your own setup, not this package. Per-notebook source counts depend on your Google account tier — split across notebooks if you hit a cap.
+Estes combinam primitivas ordinárias da biblioteca — veja a [Referência da CLI](docs/cli-reference.md) e a [API Python](docs/python-api.md). A cola do lado do agente (habilidades, agendamento, layout do vault) vive na sua própria configuração, não neste pacote. Contagens de fontes por notebook dependem do nível da sua conta Google — divida entre notebooks se atingir um limite.
 
-**New here?** Start with a walkthrough: [Claude Code + NotebookLM = CHEAT CODE (video)](https://www.youtube.com/watch?v=usTeU4Uh0iM) · [5 demos + 50 use cases, with prompts](https://aiblewmymind.substack.com/p/notebooklm-claude-code-use-cases).
+**Novo aqui?** Comece com um passeio: [Claude Code + NotebookLM = TRAPAÇA (vídeo)](https://www.youtube.com/watch?v=usTeU4Uh0iM) · [5 demos + 50 casos de uso, com prompts](https://aiblewmymind.substack.com/p/notebooklm-claude-code-use-cases).
 
 ## Ways to Use
 
