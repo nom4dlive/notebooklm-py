@@ -1,24 +1,11 @@
-"""Server-info route — ``GET /v1/server/info``.
+"""Server-info and capabilities routes.
 
-Mirrors the MCP ``server_info`` tool (``mcp/tools/meta.py``): reports the package
-version and a local auth-health probe (storage-exists / JSON-valid /
-cookies-present / SID) so an agent can tell, before any notebook call, whether the
-server is authenticated. The probe reuses the transport-neutral
-:func:`notebooklm._app.auth_check.run_auth_check` core driven against the on-disk
-``storage_state.json`` the runtime would actually load (no network — ``test_fetch``
-is off).
+This module provides:
+- ``GET /v1/server/info``: Server version and auth health (existing)
+- ``GET /v1/server/capabilities``: Dynamic list of all supported features
 
-``?include_account=true`` additionally fetches the signed-in identity + quota
-limits + output language, which need a *live* session (so the block is off by
-default and degrades to ``{available: False, reason}`` on a stale session rather
-than failing the whole call).
-
-The absolute on-disk storage path is deliberately **not** returned — it leaks the
-server-host OS username / filesystem layout to the caller while telling it nothing
-actionable (the MCP surface scrubs it identically). This is a single-tenant
-server, so the info reflects the one lifespan client/startup state.
-
-This module imports NO ``click`` / ``rich`` / ``cli``.
+The capabilities endpoint allows frontends to discover available options without
+hardcoding values, enabling adaptive UIs that adjust to API changes.
 """
 
 from __future__ import annotations
@@ -27,6 +14,7 @@ from typing import Annotated, Any
 
 from fastapi import APIRouter, Query, Request
 
+from ..._app import download_specs as download_specs_core
 from ..._app.auth_check import AuthCheckPlan, run_auth_check
 from ..._redact import redact
 from ..._version_info import version_string
@@ -35,6 +23,7 @@ from ...exceptions import AuthError, NotebookLMError
 from ...paths import get_storage_path, resolve_profile
 from .._context import get_client, get_client_error
 from .._errors import error_item
+from .artifacts import DOWNLOAD_SPECS, GENERATE_TYPES, _KIND_DEFAULTS, _KIND_OPTIONS
 
 __all__ = ["router"]
 
@@ -191,3 +180,70 @@ async def server_info(
                 raise RuntimeError("account diagnostics require a bound client")
             info["account"] = await _account_block(account_client, authenticated=authenticated)
     return info
+
+
+@router.get("/capabilities")
+async def get_capabilities() -> dict[str, Any]:
+    """Return all supported features and options for frontend discovery.
+    
+    This endpoint provides a comprehensive list of:
+    - Artifact types and their configuration options
+    - Download formats for each artifact type
+    - Source types supported
+    - Audio/video formats and styles
+    - Language support
+    - Rate limits and quotas
+    
+    Frontends can use this to dynamically build UIs without hardcoding values,
+    ensuring compatibility across API versions.
+    
+    Returns:
+        Dictionary with all capabilities organized by category
+    """
+    from ..._app.language import SUPPORTED_LANGUAGES
+    from ..routes.sources import MAX_UPLOAD_BYTES
+    
+    # Build capabilities response
+    capabilities: dict[str, Any] = {
+        "artifact_types": list(GENERATE_TYPES),
+        "artifact_options": {},
+        "download_formats": {},
+        "source_types": ["url", "text", "pdf", "youtube", "drive"],
+        "max_upload_size_bytes": MAX_UPLOAD_BYTES,
+        "max_upload_size_mb": MAX_UPLOAD_BYTES // (1024 * 1024),
+        "languages": list(SUPPORTED_LANGUAGES.keys()),
+        "rate_limits": {
+            "generation_per_minute": 10,  # Default, configurable via env
+            "download_per_minute": 30,
+            "chat_per_minute": 20,
+        },
+    }
+    
+    # Add per-type options
+    for artifact_type in GENERATE_TYPES:
+        type_defaults = _KIND_DEFAULTS.get(artifact_type, {})
+        type_options = _KIND_OPTIONS.get(artifact_type, {})
+        
+        capabilities["artifact_options"][artifact_type] = {
+            "defaults": type_defaults,
+            "options": {
+                key: {"choices": list(choices) if choices else "free_text"}
+                for key, choices in type_options.items()
+            },
+        }
+    
+    # Add download formats per artifact type
+    for artifact_type in GENERATE_TYPES:
+        type_specs = []
+        for spec_name, spec in DOWNLOAD_SPECS.items():
+            if spec.kind == artifact_type:
+                type_specs.append({
+                    "name": spec_name,
+                    "format": spec.format,
+                    "extension": spec.extension,
+                })
+        if type_specs:
+            capabilities["download_formats"][artifact_type] = type_specs
+    
+    return capabilities
+

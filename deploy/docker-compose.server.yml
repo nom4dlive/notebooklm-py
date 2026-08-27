@@ -1,0 +1,86 @@
+# Docker Compose para Servidor REST NotebookLM
+
+# Este arquivo sobe o servidor REST completo para frontends web/mobile.
+# Use perfis para tunnels opcionais (Cloudflare ou Tailscale).
+#
+# PRÉ-REQUISITOS:
+# 1. Criar perfil com token mestre: `notebooklm login --master-token`
+# 2. Copiar .env.example para .env e configurar
+# 3. Executar: docker compose -f docker-compose.server.yml up -d
+#
+# Perfis disponíveis:
+#   - (nenhum): apenas servidor REST acessível via localhost:8000
+#   - cloudflare: expõe via Cloudflare Tunnel (precisa de domínio)
+#   - tailscale: expõe via Tailscale Funnel (*.ts.net)
+
+services:
+  # === SERVIDOR REST PARA FRONTENDS ===
+  notebooklm-rest:
+    build:
+      context: ..
+      dockerfile: deploy/Dockerfile.server
+    restart: unless-stopped
+    user: "${NOTEBOOKLM_UID:-1000}:${NOTEBOOKLM_GID:-1000}"
+    environment:
+      # Token de autenticação para frontends (OBRIGATÓRIO)
+      NOTEBOOKLM_SERVER_TOKEN: ${NOTEBOOKLM_SERVER_TOKEN}
+      # Permitir bind externo (necessário para 0.0.0.0)
+      NOTEBOOKLM_SERVER_ALLOW_EXTERNAL_BIND: "1"
+      # Configurações do servidor
+      NOTEBOOKLM_SERVER_HOST: 0.0.0.0
+      NOTEBOOKLM_SERVER_PORT: 8000
+      # Habilitar documentação OpenAPI/Swagger (opcional)
+      NOTEBOOKLM_SERVER_ENABLE_DOCS: ${NOTEBOOKLM_SERVER_ENABLE_DOCS:-0}
+      # CORS origins (opcional, separado por vírgulas)
+      NOTEBOOKLM_SERVER_CORS_ORIGINS: ${NOTEBOOKLM_SERVER_CORS_ORIGINS:-}
+      # Rate limiting (opcional)
+      NOTEBOOKLM_SERVER_RATE_LIMIT_REQUESTS: ${NOTEBOOKLM_SERVER_RATE_LIMIT_REQUESTS:-100}
+      NOTEBOOKLM_SERVER_RATE_LIMIT_WINDOW: ${NOTEBOOKLM_SERVER_RATE_LIMIT_WINDOW:-60}
+      # Perfil e home directory
+      NOTEBOOKLM_HOME: /data
+      NOTEBOOKLM_PROFILE: server
+      HOME: /data/profiles/server
+    volumes:
+      # Perfil do Google (criado com notebooklm login --master-token)
+      - "${NOTEBOOKLM_PROFILE_DIR:-${HOME}/.notebooklm/profiles/default}:/data/profiles/server:rw"
+    ports:
+      - "127.0.0.1:${NOTEBOOKLM_SERVER_PORT:-8000}:8000"
+    healthcheck:
+      test: ["CMD", "python", "-c", "import socket; s=socket.socket(); s.settimeout(2); exit(0 if s.connect_ex(('127.0.0.1',8000))==0 else 1)"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 20s
+
+  # === Tunnel Cloudflare (perfil opcional) ===
+  cloudflared:
+    profiles: ["cloudflare"]
+    image: cloudflare/cloudflared:${CLOUDFLARED_VERSION:-latest}
+    restart: unless-stopped
+    command: tunnel run
+    environment:
+      TUNNEL_TOKEN: ${CF_TUNNEL_TOKEN}
+    depends_on:
+      notebooklm-rest:
+        condition: service_healthy
+
+  # === Tunnel Tailscale Funnel (perfil opcional) ===
+  tailscale:
+    profiles: ["tailscale"]
+    image: tailscale/tailscale:latest
+    restart: unless-stopped
+    environment:
+      TS_AUTHKEY: ${TS_AUTHKEY}
+      TS_HOSTNAME: notebooklm-rest
+      TS_STATE_DIR: /var/lib/tailscale
+      TS_USERSPACE: "true"
+      TS_SERVE_CONFIG: /config/funnel.json
+    volumes:
+      - tailscale-state:/var/lib/tailscale
+      - ./tailscale:/config:ro
+    depends_on:
+      notebooklm-rest:
+        condition: service_healthy
+
+volumes:
+  tailscale-state:

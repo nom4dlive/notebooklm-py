@@ -27,6 +27,7 @@ This module imports NO ``click`` / ``rich`` / ``cli``.
 from __future__ import annotations
 
 import asyncio
+import os
 import re
 import time
 from collections.abc import AsyncIterator, Awaitable, Callable
@@ -35,6 +36,7 @@ from dataclasses import dataclass
 from typing import cast
 
 from fastapi import APIRouter, Depends, FastAPI, Request, Response
+from fastapi.middleware.cors import CORSMiddleware
 from starlette.exceptions import HTTPException as StarletteHTTPException
 
 from .._runtime.config import DEFAULT_SERVER_KEEPALIVE_INTERVAL
@@ -46,7 +48,7 @@ from ._context import AppState
 from ._errors import http_error_response, install_exception_handlers
 from ._limits import ServerLimiters
 from ._pending import PendingRegistry
-from .routes import artifacts, chat, meta, notebooks, notes, research, share, sources
+from .routes import artifacts, chat, meta, notebooks, notes, research, share, sources, streaming
 from .routes.sources import MAX_UPLOAD_BYTES
 
 __all__ = ["SERVER_NAME", "create_app"]
@@ -405,15 +407,18 @@ def create_app(
         finally:
             set_active_profile(previous_profile)
 
+    # Habilitar documentação OpenAPI/Swagger condicionalmente via env var
+    # Segurança: desabilitado por padrão; habilitar apenas em ambientes seguros
+    _enable_docs = os.environ.get("NOTEBOOKLM_SERVER_ENABLE_DOCS") == "1"
     app = FastAPI(
         title=SERVER_NAME,
         lifespan=lifespan,
-        # Disable the unauthenticated schema surface (FastAPI mounts these
+        # Disable the unauthenticated schema surface by default (FastAPI mounts these
         # outside the /v1 auth dependency). A credential-fronting server must
-        # not expose its surface tokenless.
-        docs_url=None,
-        redoc_url=None,
-        openapi_url=None,
+        # not expose its surface tokenless. Enable via NOTEBOOKLM_SERVER_ENABLE_DOCS=1.
+        docs_url="/docs" if _enable_docs else None,
+        redoc_url="/redoc" if _enable_docs else None,
+        openapi_url="/openapi.json" if _enable_docs else None,
     )
 
     install_exception_handlers(app)
@@ -484,6 +489,21 @@ def create_app(
     v1.include_router(research.router)
     v1.include_router(share.router)
     v1.include_router(meta.router)
+    v1.include_router(streaming.router)
     app.include_router(v1)
+
+    # CORS middleware: habilitar condicionalmente via env var para frontends web
+    # NOTEBOOKLM_SERVER_CORS_ORIGINS=https://frontend.com,https://app.com
+    cors_origins = os.environ.get("NOTEBOOKLM_SERVER_CORS_ORIGINS")
+    if cors_origins:
+        origins = [origin.strip() for origin in cors_origins.split(",") if origin.strip()]
+        if origins:
+            app.add_middleware(
+                CORSMiddleware,
+                allow_origins=origins,
+                allow_credentials=True,
+                allow_methods=["*"],
+                allow_headers=["*"],
+            )
 
     return app
