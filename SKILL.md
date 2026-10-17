@@ -313,3 +313,11 @@ If this file is already inside an agent skill directory, the skill itself is ins
 - `notebooklm skill install` installs or updates supported local skill targets.
 - `notebooklm skill package` builds an uploadable archive for sandboxed agent environments.
 - `notebooklm skill status --json` reports installed versions and `content_mismatch`.
+
+## Polyglot & Multi-Stack Integration
+
+For connecting external backends (TypeScript/Node.js, PHP/Laravel, Go, Docker) or autonomous AI agents across workspaces:
+- Consult the complete architectural guide in [docs/agent-polyglot-guide.md](docs/agent-polyglot-guide.md).
+- Ready-to-run REST clients are available in `examples/polyglot/` (`typescript-client/` and `php-laravel/`).
+- Global Antigravity skill installed at `~/.gemini/config/skills/notebooklm-polyglot/SKILL.md`.
+

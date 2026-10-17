@@ -1,0 +1,15 @@
+{
+  "name": "notebooklm-typescript-example",
+  "version": "1.0.0",
+  "description": "Ready-to-run TypeScript client for NotebookLM-py REST Server",
+  "main": "client.ts",
+  "scripts": {
+    "start": "ts-node client.ts"
+  },
+  "dependencies": {},
+  "devDependencies": {
+    "typescript": "^5.0.0",
+    "ts-node": "^10.9.0",
+    "@types/node": "^20.0.0"
+  }
+}
